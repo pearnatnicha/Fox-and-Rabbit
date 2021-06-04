@@ -1,16 +1,12 @@
 package io.muic.ooc.fab;
 
-import java.util.List;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Random;
 
-public class Fox extends Animal {
-    // The food value of a single rabbit. In effect, this is the
-    // number of steps a fox can go before it has to eat again.
-    // Random generator
+public class Tiger extends Animal {
     private static final Random RANDOM = new Random();
 
-    // The fox's food level, which is increased by eating rabbits.
     private int foodLevel;
 
     /**
@@ -66,6 +62,7 @@ public class Fox extends Animal {
      *
      * @return Where food was found, or null if it wasn't.
      */
+
     private Location findFood() {
         List<Location> adjacent = field.adjacentLocations(getLocation());
         Iterator<Location> it = adjacent.iterator();
@@ -86,25 +83,24 @@ public class Fox extends Animal {
 
     @Override
     public int getMaxAge() {
-        return 150;
+        return 200;
     }
 
     @Override
     protected double getBreedingProbability() {
-        return 0.08;
+        return 0.045;
     }
 
     @Override
     protected int getMaxLitterSize() {
-        return 6;
+        return 2;
     }
 
     @Override
     protected int getBreedingAge() {
-        return 12;
+        return 40;
     }
 
     @Override
-    protected int getFoodValue(){ return 15; }
-
+    protected int getFoodValue(){ return 40; }
 }

@@ -1,36 +1,32 @@
 package io.muic.ooc.fab;
 
-import java.util.List;
 import java.util.Iterator;
-import java.util.Random;
+import java.util.List;
 
-public class Fox extends Animal {
+public class Hunter extends Actor {
     // The food value of a single rabbit. In effect, this is the
     // number of steps a fox can go before it has to eat again.
     // Random generator
-    private static final Random RANDOM = new Random();
 
     // The fox's food level, which is increased by eating rabbits.
-    private int foodLevel;
 
     /**
      * Create a fox. A fox can be created as a new born (age zero and not
      * hungry) or with a random age and food level.
      *
      * @param randomAge If true, the fox will have random age and hunger level.
-     * @param field The field currently occupied.
-     * @param location The location within the field.
+     * @param field     The field currently occupied.
+     * @param location  The location within the field.
      */
 
     @Override
     public void initialize(boolean randomAge, Field field, Location location) {
         super.initialize(randomAge, field, location);
-        foodLevel = RANDOM.nextInt(this.getFoodValue());
     }
 
     @Override
     protected Location moveToNewLocation() {
-        Location newLocation = findFood();
+        Location newLocation = findAnimal();
         if (newLocation == null) {
             // No food found - try to move to a free location.
             newLocation = field.freeAdjacentLocation(getLocation());
@@ -46,19 +42,19 @@ public class Fox extends Animal {
      */
     @Override
     public void act(List<Actor> newActor) {
-        incrementHunger();
-        super.act(newActor);
+        if (isAlive()) {
+            // Try to move into a free location.
+            Location newLocation = moveToNewLocation();
+            if (newLocation != null) {
+                setLocation(newLocation);
+            }
+        }
     }
 
     /**
      * Make this fox more hungry. This could result in the fox's death.
      */
-    private void incrementHunger() {
-        foodLevel--;
-        if (foodLevel <= 0) {
-            setDead();
-        }
-    }
+
 
     /**
      * Look for rabbits adjacent to the current location. Only the first live
@@ -66,7 +62,9 @@ public class Fox extends Animal {
      *
      * @return Where food was found, or null if it wasn't.
      */
-    private Location findFood() {
+
+
+    public Location findAnimal() {
         List<Location> adjacent = field.adjacentLocations(getLocation());
         Iterator<Location> it = adjacent.iterator();
         while (it.hasNext()) {
@@ -74,37 +72,13 @@ public class Fox extends Animal {
             Object animal = field.getObjectAt(where);
             if (animal instanceof Animal) {
                 Animal animals = (Animal) animal;
-                if ((animals.isAlive()) && (animals.getFoodValue() < this.getFoodValue())) {
+                if (animals.isAlive()) {
                     animals.setDead();
-                    foodLevel = animals.getFoodValue();
                     return where;
                 }
             }
         }
         return null;
     }
-
-    @Override
-    public int getMaxAge() {
-        return 150;
-    }
-
-    @Override
-    protected double getBreedingProbability() {
-        return 0.08;
-    }
-
-    @Override
-    protected int getMaxLitterSize() {
-        return 6;
-    }
-
-    @Override
-    protected int getBreedingAge() {
-        return 12;
-    }
-
-    @Override
-    protected int getFoodValue(){ return 15; }
 
 }
